@@ -1,0 +1,53 @@
+Mouse wheel support in the Milan TOS
+
+VDI:
+There is a new VDI function vex_wheelv() (Opcode 134):
+
+vex_wheelv() installs a routine which is called by the VDI every time a mouse wheel event occurs.
+
+Binding
+contrl[0] = 134;
+contrl[1] = contrl[3] = 0;
+contrl[6] = handle;
+contrl[7] = (WORD)((LONG)wheelv >> 16);
+contrl[8] = (WORD)((LONG)wheelv);
+vdi();
+*(LONG *)old_wheelv = (LONG)(((LONG)contrl[9] << 16) | (LONG)contrl[10]);
+
+Upon entry to wheelv, D0.w contains the wheel number (starting with 0), and
+D1.w contains the number of "clicks" the wheel was moved (as a signed
+value). The function may not alter any CPU registers except D0 and D1.
+
+
+Currently, the Milan BIOS only supports the simple PS/2 wheel protocol,
+which supports only one wheel and up to five buttons.
+
+AES:
+
+The current Milan AES sends WM_ARROWED messages to the currently active
+window, with the following extension:
+
+mbuf[0] = WM_ARROWED
+mbuf[1] = ap_id
+mbuf[2] = 0
+mbuf[3] = w_handle
+mbuf[4] = WA_UPLINE or WA_DOWNLINE
+mbuf[5] = 0x4D57 ('MW') for first msg or 0x4D77 ('Mw') for following
+mbuf[6] = wheel_no
+mbuf[7] = (remaining) clicks
+
+If the mouse wheel was moved by 3 notches, the application will get 3 messages:
+{WM_ARROWED, x, 0, handle, WA_DOWNLINE, 0x4D57, 0, 3}
+{WM_ARROWED, x, 0, handle, WA_DOWNLINE, 0x4D77, 0, 2}
+{WM_ARROWED, x, 0, handle, WA_DOWNLINE, 0x4D77, 0, 1}
+
+An old application will only see 3 WM_ARROWED messages and scroll by 3
+lines. A new application can ignore the 0x4D77 messages and scroll by 3
+lines at once upon receipt of the first message.
+
+An extension by which an application can tell the AES that it is wheel-aware
+and only wants to get the first message can be added.
+
+
+WARNING: the interface between Bios and VDI is undocumented and may change
+without notice when necessary.

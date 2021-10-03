@@ -1,0 +1,675 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Draft//EN">
+<HTML>
+<HEAD>
+<TITLE>Atari PCI BIOS and device driver specification (Draft) 1.9 </TITLE>
+</HEAD>
+<BODY>
+<H1>Atari PCI BIOS and device driver specification (Draft) 1.9 </H1>
+
+<H2>Michael Schwingen, <CODE>rincewind@discworld.dascon.de</CODE></H2>1997/11/28 19:06:00 
+<P><HR>
+<EM>This document describes the software interface which is used by drivers and
+other system-oriented programs to get access to PCI cards present in
+Atari-compatible systems. Support for ISA and ISA PnP cards can be added without changes.</EM>
+<HR>
+<H2><A NAME="s1">1. Introduction</A></H2>
+
+<P>This document describes the software interface which is used by drivers and
+other system-oriented programs to get access to PCI cards present in the
+system. Support for ISA and ISA PnP cards can be added without changes.
+<P>
+<H2>1.1 Related Documents</H2>
+
+<P>
+<UL>
+<LI>PCI Local Bus Specification, Revision 2.0 April 30, 1993</LI>
+<LI>PCI BIOS Specification, Revision 2.1, August 26, 1994</LI>
+</UL>
+<P>
+<H2><A NAME="s2">2. General</A></H2>
+
+<H2>2.1 Resources</H2>
+
+<P>All cards get their resources (memory and IO areas, interrupts) assigned
+and set by the system. Drivers and other programs may <EM>not</EM> modify these
+settings.
+<P>
+<H2>2.2 Calling Conventions</H2>
+
+<P>The PCI BIOS functions use the 680x0 CPU registers to pass arguments and to
+return status.
+<P>The routines may modify only those registers which are used to pass
+parameters or to return information in as specified for the specific
+function, plus the status register.
+<P>The routines must be called in Supervisor mode, and the available stack
+must be at least 1024 bytes.
+<P>The functions may disable interrupts during execution, but will return with
+the interrupts in the same state as when they were called.
+<P>All functions return an error code in D0 if an error occurred.
+<P>
+<H2>2.3 Device Handles</H2>
+
+<P>Every device on a PCI (or ISA) card is specified by using a device 
+handle. The device handle is used as an opaque data type by the driver - no
+assumptions are to be made about the meaning of bits in this value. 
+device handles are positive 32-bit integers - negative values are used for
+error codes for functions which return device handles.
+<P>
+<P>
+<H2>2.4 Locating the function entry points</H2>
+
+<P>The BIOS installs a "_PCI" cookie which points to the following structure
+of entry points to the individual functions:
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+dc.l  0                     ; $00 pointer to sub cookie jar (for 
+                            ; compatibility) or 0 if not present
+dc.l  1                     ; $04 version number of this structure
+dc.l  find_pci_device       ; $08
+dc.l  find_pci_classcode    ; $0C 
+dc.l  read_config_byte     
+dc.l  read_config_word     
+dc.l  read_config_longword 
+dc.l  fast_read_config_byte    
+dc.l  fast_read_config_word    
+dc.l  fast_read_config_longword
+dc.l  write_config_byte     
+dc.l  write_config_word     
+dc.l  write_config_longword 
+dc.l  hook_interrupt        
+dc.l  unhook_interrupt      
+dc.l  special_cycle
+dc.l  get_routing           
+dc.l  set_interrupt         
+dc.l  get_resource          
+dc.l  get_card_used       
+dc.l  set_card_used
+dc.l  read_mem_byte
+dc.l  read_mem_word
+dc.l  read_mem_longword
+dc.l  write_mem_byte
+dc.l  write_mem_word
+dc.l  write_mem_longword
+dc.l  read_io_byte
+dc.l  read_io_word
+dc.l  read_io_longword
+dc.l  write_io_byte
+dc.l  write_io_word
+dc.l  write_io_longword
+dc.l  get_machine_id
+dc.l  virt_to_bus
+dc.l  bus_to_virt
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+            
+<P>This structure, and the functions it points to, should be in ROM or some
+other place which is safe from being overwritten (eg. above phystop), if it
+is desirable that alternative Operating Systems can use the functions.
+<P>The circumstances for calling the functions may need to be specified
+further for this case.
+<P>
+<H2>2.5 Interrupt Handlers</H2>
+
+<P>For each hardware interrupt, there is a chain of interrupt handlers, as
+multiple cards can share the same interrupt.
+<P>By specifying a device handle and an interrupt line
+on that card (INTA - INTD), a driver can hook into the chain that handles
+this interrupt without knowing which one it actually is.
+<P>When an interrupt occurs, the driver is called with a value in A0 which is
+set by the driver when hooking into the interrupt. The meaning of this
+parameter depends on the driver - it can be a device handle, a pointer to some
+driver-internal data structure, etc..
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+interrupt_handler:
+Input:
+  A0.L   value as passed to hook_interrupt
+  D0.L   BIOS internal data
+Output:
+  D0.L   bit 0 set if the interrupt was from this card. D0 unmodified
+         otherwise.
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+<P>The interrupt handler must not modify any register except D0 (only as
+specified) and A0. 
+If the interrupt was caused by the card which this handler is monitoring,
+it must make sure that the card returns the interrupt line to inactive
+state, and return with D0.0 set. 
+<P>If the card did not cause the interrupt, the driver must not modify D0.
+<P>The interrupt handler returns by using an RTS instruction.
+<P>
+<P>
+<H2>2.6 Error codes</H2>
+
+<P>The following error codes can be returned by the PCI BIOS functions:
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+ $00000000   PCI_SUCCESSFUL
+ $FFFFFFFE   PCI_FUNC_NOT_SUPPORTED
+ $FFFFFFFD   PCI_BAD_VENDOR_ID
+ $FFFFFFFC   PCI_DEVICE_NOT_FOUND
+ $FFFFFFFB   PCI_BAD_REGISTER_NUMBER
+ $FFFFFFFA   PCI_SET_FAILED
+ $FFFFFFF9   PCI_BUFFER_TOO_SMALL
+ $FFFFFFF8   PCI_GENERAL_ERROR
+ $FFFFFFF7   PCI_BAD_HANDLE
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+<P>
+<H2><A NAME="s3">3. PCI BIOS functions</A></H2>
+
+<H2>3.1 Find PCI device</H2>
+
+<P>This function returns a device handle for a device that
+matches the given device and vendor ID.
+<P>A driver can query multiple devices with the same device and vendor ID by
+starting with index 0 and calling this function until PCI_DEVICE_NOT_FOUND is
+returned.
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+find_pci_device:
+Input:
+  D0.L      Device ID in bits 15..0  (0 - $FFFF), 
+            Vendor ID in bits 31..16 (0 - $FFFE)
+  D1.W      Index (0 - # of cards with these IDs)
+Output:
+  D0.L      device handle or error code
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+<P>
+<H2>3.2 Find PCI class code</H2>
+
+<P>This function returns a device handle for a device that
+matches the given class code.
+<P>A driver can query multiple devices with the same class code by
+starting with index 0 and calling this function until PCI_DEVICE_NOT_FOUND is
+returned.
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+find_pci_classcode:
+Input:
+  D0.L      class code in bits 23..0:
+              Base class in bit 23..16 (0 - $FF),
+              Sub  class in bit 15..8  (0 - $FF),
+              Prog. If.  in bit  7..0  (0)
+  D1.W      Index (0 - # of cards with these IDs)
+Output:
+  D0.L      device handle or error code
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+<P>
+<H2>3.3 Read Configuration {Byte|Word|Longword}</H2>
+
+<P>These three functions read data from the PCI configuration space of a given
+card.
+<P>!!!To do: specify if big or little endian addressing is used
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+read_config_byte:
+read_config_word:
+read_config_longword:
+Input:
+  D0.L      device handle
+  A0.L      pointer to space for read data
+  D1.B      Register number (0,1,2,... for Byte access)
+  D1.B      Register number (0,2,4,... for Word access)
+  D1.B      Register number (0,4,8,... for Longword access)
+Output:
+  D0        error code (32 bits)
+            read data at buffer pointed to by A0
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+<P>
+<H2>3.4 Read Configuration {Byte|Word|Longword} FAST</H2>
+
+<P>These three functions read data from the PCI configuration space of a given
+card. They do only minimal error checking and are meant to be used in
+interrupt handlers.
+<P>!!!To do: specify if big or little endian addressing is used
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+fast_read_config_byte:
+fast_read_config_word:
+fast_read_config_longword:
+Input:
+  D0.L      device handle
+  D1.B      Register number (0,1,2,... for Byte access)
+  D1.B      Register number (0,2,4,... for Word access)
+  D1.B      Register number (0,4,8,... for Longword access)
+Output:
+  D0        read data (8, 16 or 32 bits)
+  SR:       carry flag may be set if an error occurred 
+            (implementation dependent)
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+<P>
+<P>
+<H2>3.5 Write Configuration {Byte|Word|Longword}</H2>
+
+<P>These three functions write data to the PCI configuration space of a given
+card.
+<P>!!!To do: specify if big or little endian addressing is used
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+write_config_byte:
+write_config_word:
+write_config_longword:
+Input:
+  D0.L      device handle
+  D1.B      Register number (0,1,2,... for Byte access)
+  D1.B      Register number (0,2,4,... for Word access)
+  D1.B      Register number (0,4,8,... for Longword access)
+  D2        data to write (8/16/32 bits)
+Output:
+  D0.L      error code
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+<P>
+<H2>3.6 Hook Interrupt Vector</H2>
+
+<P>This function hooks the driver into the interrupt chain to which a specific
+interrupt on the given card is routed. The interrupt is enabled on the
+system level, however, it is the drivers responsibility to enable the
+interrupt on the card itself as needed.
+<P>The driver should first hook into the interrupt chain, and then enable the
+interrupt on the card, in order not to cause spurious interrupts.
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+hook_interrupt:
+Input:
+  D0.L      device handle
+  A0        pointer to interrupt handler
+  A1        parameter for interrupt handler.
+Output:
+  D0.L      error code
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+
+The parameter (from A1) is passed to the interrupt handler unmodified - its
+meaning is totally driver dependent.
+<P>
+<P>
+<H2>3.7 Unhook Interrupt Vector</H2>
+
+<P>This function removes the driver from the interrupt chain to which a specific
+interrupt on the given card is routed. The driver must turn off interrupt
+generation on the card before calling this function.
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+unhook_interrupt:
+Input:
+  D0.L      device handle 
+Output:
+  D0.L      error code
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+<P>
+<H2>3.8 Generate Special Cycle</H2>
+
+<P>This function generates a special cycle on the PCI bus.
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+special_cycle:
+Input:
+  D0.B      bus number
+  D1.L      special cycle data
+Output:
+  D0.L      error code
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+<P>
+<H2>3.9 Get Interrupt Routing Options</H2>
+
+<P>to be defined. Not for use by device drivers.
+<P>
+<H2>3.10 Set Hardware Interrupt</H2>
+
+<P>to be defined. Not for use by device drivers.
+<P>
+<H2>3.11 Get Resource Data</H2>
+
+<P>This function returns data about the resources which a device uses. The
+returned structure may <EM>not</EM> be modified by the driver.
+<P>The driver can then use these information and directly access the device if
+he knows the type of byte ordering, or it can use the system routines
+(mem|io_read|write_...) which handle this transparently.
+<P>The function returns a pointer to the first resource descriptor for this
+device. The driver can get the next descriptor by adding the length field
+to the address of the current descriptor.
+<P>The descriptors are in the same order as the base address registers in the PCI
+configuration space of the device.
+<P>If bit 15 of the flags is set, there is no next descriptor.
+<P>A device can have multiple resources of the same type. 
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+get_resource:
+Input:
+  D0.L      device handle 
+Output:
+  D0.L      pointer to array of resource descriptors or error code
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+<P>The resource descriptors look like this:
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+struct resource_descriptor:
+  next      DS.W 1    ; length of this structure in bytes
+                      ; Use this to get next descriptor
+  flags     DS.W 1    ; type of resource and misc flags
+  start     DS.L 1    ; start address of resource
+  length    DS.L 1    ; length of resource
+  offset    DS.L 1    ; offset from PCI to physical CPU address
+  dmaoffset DS.L 1    ; offset for DMA-Memory transfers.
+  private   DS.B n    ; private data, used only by the PCI BIOS. Do not touch.
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+<P>The <CODE>flags</CODE> field is bit-coded as follows:
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+  RSC_IO      = $4000 ; This is an IO area (Memory area if bit is clear)
+  RSC_LAST    = $8000 ; last resource for this device
+
+  FLG_8BIT    = $0100 ; 8-bit accesses are supported
+  FLG_16BIT   = $0200 ; 16-bit accesses are supported
+  FLG_32BIT   = $0400 ; 32-bit accesses are supported
+  FLG_ENDMASK = $000F ; Bit 0..3 specify which byte ordering is used:
+                        0 = Motorola.
+                        1 = Intel, address-swapped
+                        2 = Intel, lane-swapped
+                        3..14 = reserved
+                        15 = unknown. Access card only via BIOS functions.
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+<P>The <CODE>start</CODE> field contains the start address on the PCI bus of the
+resource. The <CODE>length</CODE> field contains its length.
+<P>The <CODE>offset</CODE> field contains the offset from physical CPU to PCI address
+for the resource - ie. the value that must be added to the PCI address to
+get the physical address in CPU address space.
+<P>The <CODE>dmaoffset</CODE> gives the offset that must be added to a PCI address to
+get the physical address in CPU address space when doing DMA transfers.
+<P>!!! is this still needed, or should we use virt_to_bus/bus_to_virt
+exclusively?
+<P>
+<H3>What are all these byte orders?</H3>
+
+<P>
+<P>Motorola byte ordering (big endian) is what you would expect on a 680x0
+system: 8/16/32 bit accesses work as expected.
+<P>When address-swapped Intel (little endian) byte ordering is used, 32 bit
+accesses work without modifications. On 16 bit accesses, the address needs
+to be XOR'd with a value of 2, on 8-bit accesses the address is XOR'd with
+a value of 3. The data read or written is in correct format.
+<P>When lane-swapped Intel (little endian) byte ordering is used, the address
+needs no modifications. 8-bit accesses work normal, on 16 and 32 bit
+accesses the read or written data needs to be swapped (ror.w #8,d0 for
+16 bit, ror.w d0:swap d0:ror.w d0 for 32 bit).
+<P>
+<P>
+<P>
+<P>
+<P>
+<P>
+<H2>3.12 Memory/IO Read/Write</H2>
+
+<P>These functions read or write 8, 16 or 32-bit values from a memory or IO
+region and take care of the byte ordering - ie. the data and address are
+converted as if Motorola byte ordering was in use.
+<P>A driver can use these functions for access to registers and small
+buffers. For larger amounts of data, the driver can choose to use his own
+copy routines, provided it knows the byte order in use.
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+read_mem_byte:
+read_mem_word:
+read_mem_longword:
+write_mem_byte:
+write_mem_word:
+write_mem_longword:
+read_io_byte:
+read_io_word:
+read_io_longword:
+write_io_byte:
+write_io_word:
+write_io_longword:
+Input:
+  D0.L      device handle
+  D1.L      address to access (in physical CPU address space)
+  A0.L      pointer to data in memory
+Output:
+  D0.L      error code
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+<P>
+<H2>3.13 Example</H2>
+
+<P>
+<UL>
+<LI>use <CODE>find_pci_device</CODE> or <CODE>find_pci_classcode</CODE>
+to find out if there is a supported card and get a device handle for the
+card</LI>
+<LI>use <CODE>get_resource*</CODE> to read the start address and length of a used
+resource. </LI>
+<LI>Now, either: add the offset from the resource descriptor to the
+address to directly access the card.</LI>
+<LI>Or: use the read_*/write_* functions to access the card.</LI>
+</UL>
+<P>
+<H2><A NAME="s4">4. Driver support functions</A></H2>
+
+<P>These functions are used to manage which card is in use by which driver. A
+driver can provide a means by which a call-back function can be called from
+another driver to deactivate this driver. This is necessary for the first
+driver to unhook from interrupt chains etc., before the new driver can take
+over.
+<P>
+<H2>4.1 Get|Set card used flag</H2>
+
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+get_card_used:
+Input:
+  D0.L      device handle
+  A0.L      pointer to longword where call-back address is stored
+Output:
+  D0.L      error code or status
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+<P>The returned status is either 0 (the card is free), 1 (the
+card is in use), 2 (the card is in use, but the driver can be
+uninstalled) or 3 (the card is in use, but can be taken over without further
+actions). 
+<P>Case 3 means that the driver which brought the card to this state may not
+hook into interrupt chains or other system resources which need to be
+unhooked when another driver takes over the card.
+<P>
+<P>If the return code is 2, the call-back function entry of the driver is
+returned in the memory pointed to by A0.
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+set_card_used:
+Input:
+  D0.L      device handle
+  A0.L      address of call-back entry (not pointer to address!) 
+            or 0L, 1L or 3L
+Output:
+  D0.L      error code
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+<P>If the call-back entry is 0L, 1L or 3L, the card status is set to that
+value. Only a driver which 'owns' the card may use this.
+<P>If any other value is passed, it is assumed to be a pointer to the drivers
+call back entry point, and the card status is set to 2 (in use, can be
+uninstalled).
+<P>
+<H2>4.2 Call-back handlers</H2>
+
+<P>Call-back functions are invoked by calling the call-back entry point, they
+return with RTS. Call-back functions may only modify those registers which
+are used to pass arguments or results.
+<P>Call-back functions must be called in supervisor mode with at least 1024
+bytes stack available.
+<P>The call-back function number is passed in D0.L.
+<P>If the driver supports call-back functions, the following functions are
+mandatory:
+<P>
+<H3>Call-back 0: Get Driver ID</H3>
+
+<P>The driver returns his ID (4-byte ASCII, same as the XBRA ID) in D0.L.
+<P>
+<H3>Call-back 1: Try to remove driver</H3>
+
+<P>The driver tries to uninstall. If it succeeds, it returns 0 in D0.L and
+sets the card status to 'free', otherwise, it returns 1.
+<P>
+<P>
+<P>
+<P>
+<P>
+<H2><A NAME="s5">5. Machine  ID</A></H2>
+
+<P>This function can be used to get a unique machine ID for the computer the
+driver is running on:
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+get_machine_id:
+Input:
+  none
+Output:
+  D0.L      Machine ID, or 0 (no ID available), or error code
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+<P>Positive values are machine IDs. They contain a manufacturer code in bit
+24..31 and a unique serial number which is set by the manufacturer during
+production in bit 0..23.
+<P>
+<P>
+<H2><A NAME="s6">6. PMMU support functions</A></H2>
+
+<P>These functions convert from virtual addresses (as the CPU uses them) to
+PCI bus addresses and back. This is necessary since the memory may be
+mapped non-linear by the PMMU even when not using virtual memory (it is on
+the MILAN).
+<P>These functions are limited to TOS or TOS-like operating systems. If an
+operating systems uses a different memory layout, it will need to provide
+its own functions which drivers can use.
+<P>When using these functions, the driver does not need to care about DMA
+offsets at all.
+<P>
+<H2>6.1 Convert virtual to PCI bus address</H2>
+
+<P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+virt_to_bus:
+Input:
+  D0.L      device handle
+  D1.L      address in virtual CPU space
+Output:
+  D0.L      length of contiguous mapped area, 0 if no DMA is possible 
+            at this address
+  D1.L      PCI bus address
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+<P>
+<H2>6.2 Convert PCI bus to virtual address</H2>
+
+<P>
+<P>This function is the reverse of virt_to_bus. It might be slow, so the driver
+should avoid using it if it can determine the address by other means.
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+bus_to_virt:
+Input:
+  D0.L      device handle
+  D1.L      PCI bus address
+Output:
+  D0.L      length of contiguous mapped area, 0 if an error occurred
+  D1.L      CPU (virtual) address
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+<P>
+<H2><A NAME="s7">7. To do/Notes</A></H2>
+
+<P>
+<UL>
+<LI>Document get_routing and set_interrupt
+</LI>
+<LI>For non-PnP but soft-configured ISA cards, we might need a call by
+which the driver can request a free IO or memory region, ISA interrupt
+etc..
+</LI>
+<LI>Document a method to reassign resource allocations for broken cards.
+</LI>
+<LI>Should resource descriptors have a fixed length (I don't think so,
+without the <CODE>length</CODE> field? This would make them easier to access, but
+would make future extensions difficult or ugly.
+</LI>
+<LI>The machine ID is not PCI specific. Should the function be part of
+the PCI BIOS, or should it placed somewhere else?
+</LI>
+<LI>Are there cards which need the fast_read_* functions (ie. access to
+the PCI configuration area from an interrupt handler)? Otherwise, these
+might as well be removed - especially as these can't be unimplemented, due
+to the lack of error codes..
+</LI>
+</UL>
+<P>
+</BODY>
+</HTML>

@@ -1,0 +1,702 @@
+\documentclass[a4paper]{article}
+%\usepackage[german]{babel}
+\usepackage{supertabular}
+\usepackage[latin1]{inputenc}
+\usepackage{palatino}
+\usepackage{vmargin}
+\setpapersize{A4}
+\setmarginsrb{2.0cm}{2.0cm}{2.0cm}{2.0cm}{0mm}{0mm}{0cm}{5mm}
+\parindent0mm
+\begin{document}
+
+%\newcommand{\PreserveBackslash}[1]{\let\temp=\\#1\let\\=\temp}
+%\let\PBS=\PreserveBackslash
+
+{\Large Overview of operating system calls on Atari and compatible
+  machines}\\
+Maintained by Michael Schwingen {\tt <michael@schwingen.org>}\\
+Version 2002-12-17
+
+\section{GEMDOS}
+\tablehead{\hline Dec.  & Hex   & Name  & By    & Description \\ \hline}
+\tabletail{\hline\multicolumn{5}{|r|}{\small\slshape continued ...}\\\hline}
+\tablelasttail{\hline}
+\raggedright
+\begin{supertabular}{|p{0.6cm}|p{1cm}|p{2cm}|p{1cm}|p{10cm}|}
+0       & 0x00  & Pterm0      & TOS   & Exit process with a return code of 0. \\
+1       & 0x01  & Cconin      & TOS   & Fetch a character from the console device and echo it. \\
+2       & 0x02  & Cconout     & TOS   & Output a character to the console device processing control codes. \\
+3       & 0x03  & Cauxin      & TOS   & Fetch character from the auxiliary device. \\
+4       & 0x04  & Cauxout     & TOS   & Output a character to the auxiliary device. \\
+5       & 0x05  & Cprnout     & TOS   & Output a character to the printer device. \\
+6       & 0x06  & Crawio      & TOS   & Perform input and output on the console device. \\
+7       & 0x07  & Crawcin     & TOS   & Output a character to the console device. \\
+8       & 0x08  & Cnecin      & TOS   & Fetch a character from the console device. \\
+9       & 0x09  & Cconws      & TOS   & Write a string to the console device. \\
+10      & 0x0A  & Cconrs      & TOS   & Read a string from the console device. \\
+11      & 0x0B  & Cconis      & TOS   & Determine if a character is waiting to be received from the console device. \\
+14      & 0x0E  & Dsetdrv     & TOS   & Set the current drive. \\
+16      & 0x10  & Cconos      & TOS   & Determine if a character may be sent to the console. \\
+17      & 0x11  & Cprnos      & TOS   & Determine if a character may be sent to the printer device. \\
+18      & 0x12  & Cauxis      & TOS   & Determine if a character is waiting to be received from the auxiliary device. \\
+19      & 0x13  & Cauxos      & TOS   & Determine if a character may be sent to the auxiliary device. \\
+20      & 0x14  & Maddalt     & TOS   & Notify GEMDOS of additional memory. \\
+21      & 0x15  & ?             & Magic & Used for shared libraries \\
+22      & 0x16  & ?             & Magic & Used for shared libraries \\
+25      & 0x19  & Dgetdrv     & TOS   & Get the current drive. \\
+26      & 0x1A  & Fsetdta     & TOS   & Set the address of the DTA. \\
+32      & 0x20  & Super       & TOS   & Switch between user and supervisor status. \\
+42      & 0x2A  & Tgetdate    & TOS   & Get the current date. \\
+43      & 0x2B  & Tsetdate    & TOS   & Set the current date. \\
+44      & 0x2C  & Tgettime    & TOS   & Get the current time. \\
+45      & 0x2D  & Tsettime    & TOS   & Set the current time. \\
+47      & 0x2F  & Fgetdta     & TOS   & Return a pointer to the current DTA. \\
+48      & 0x30  & Sversion    & TOS   & Obtain the GEMDOS version. \\
+49      & 0x31  & Ptermres    & TOS   & Exit process leaving some data resident in memory. \\
+51      & 0x33  & Sconfig     & Magic & Get$/$Set Magic Configuration. \\
+54      & 0x36  & Dfree       & TOS   & Determine the free space on a drive. \\
+57      & 0x39  & Dcreate     & TOS   & Create a directory. \\
+58      & 0x3A  & Ddelete     & TOS   & Delete a directory. \\
+59      & 0x3B  & Dsetpath    & TOS   & Set the current path. \\
+60      & 0x3C  & Fcreate     & TOS   & Create a file. \\
+61      & 0x3D  & Fopen       & TOS   & Open a file. \\
+62      & 0x3E  & Fclose      & TOS   & Close a file. \\
+63      & 0x3F  & Fread       & TOS   & Read binary data from a file. \\
+64      & 0x40  & Fwrite      & TOS   & Write binary data to a file. \\
+65      & 0x41  & Fdelete     & TOS   & Delete a file. \\
+66      & 0x42  & Fseek       & TOS   & Move a file pointer. \\
+67      & 0x43  & Fattrib     & TOS   & Get or set the attributes of a file. \\
+68      & 0x44  & Mxalloc     & TOS   & Allocate memory with preference. \\
+69      & 0x45  & Fdup        & TOS   & Duplicate a file handle. \\
+70      & 0x46  & Fforce      & TOS   & Redirect one handle to another. \\
+71      & 0x47  & Dgetpath    & TOS   & Return the current path. \\
+72      & 0x48  & Malloc      & TOS   & Allocate memory. \\
+73      & 0x49  & Mfree       & TOS   & Free allocated memory. \\
+74      & 0x4A  & Mshrink     & TOS   & Shrink or expand a block of memory. \\
+75      & 0x4B  & Pexec       & TOS   & Execute another process. \\
+76      & 0x4C  & Pterm       & TOS   & Exit process with the specified return code. \\
+78      & 0x4E  & Fsfirst     & TOS   & Find a file with the specified mask. \\
+79      & 0x4F  & Fsnext      & TOS   & Find subsequent files with the specified mask. \\
+86      & 0x56  & Frename     & TOS   & Rename a file or directory. \\
+87      & 0x57  & Fdatime     & TOS   & Get or set the time$/$date flags of a file. \\
+92      & 0x5C  & Flock       & ?     & Set or remove a file lock. \\
+\hline
+255     & 0xFF  & Syield      & MiNT  &  \\
+256     & 0x100 & Fpipe       & MiNT  &  \\
+260     & 0x104 & Fcntl       & MiNT  &  \\
+261     & 0x105 & Finstat     & MiNT  &  \\
+262     & 0x106 & Foutstat    & MiNT  &  \\
+263     & 0x107 & Fgetchar    & MiNT  &  \\
+264     & 0x108 & Fputchar    & MiNT  &  \\
+265     & 0x109 & Pwait       & MiNT  &  \\
+266     & 0x10A & Pnice       & MiNT  &  \\
+267     & 0x10B & Pgetpid     & MiNT  &  \\
+268     & 0x10C & Pgetppid    & MiNT  &  \\
+269     & 0x10D & Pgetpgrp    & MiNT  &  \\
+270     & 0x10E & Psetpgrp    & MiNT  &  \\
+271     & 0x10F & Pgetuid     & MiNT  &  \\
+272     & 0x110 & Psetuid     & MiNT  &  \\
+273     & 0x111 & Pkill       & MiNT  &  \\
+274     & 0x112 & Psignal     & MiNT  &  \\
+275     & 0x113 & Pvfork      & MiNT  &  \\
+276     & 0x114 & Pgetgid     & MiNT  &  \\
+277     & 0x115 & Psetgid     & MiNT  &  \\
+278     & 0x116 & Psigblock   & MiNT  &  \\
+279     & 0x117 & Psigsetmask & MiNT  &  \\
+280     & 0x118 & Pusrval     & MiNT  &  \\
+281     & 0x119 & Pdomain     & MiNT  &  \\
+282     & 0x11A & Psigreturn  & MiNT  &  \\
+283     & 0x11B & Pfork       & MiNT  &  \\
+284     & 0x11C & Pwait3      & MiNT  &  \\
+285     & 0x11D & Fselect     & MiNT  &  \\
+286     & 0x11E & Prusage     & MiNT  &  \\
+287     & 0x11F & Psetlimit   & MiNT  &  \\
+288     & 0x120 & Talarm      & MiNT  &  \\
+289     & 0x121 & Pause       & MiNT  &  \\
+290     & 0x122 & Sysconf     & MiNT  &  \\
+291     & 0x123 & Psigpending & MiNT  &  \\
+292     & 0x124 & Dpathconf   & MiNT  &  \\
+293     & 0x125 & Pmsg        & MiNT  &  \\
+294     & 0x126 & Fmidipipe   & MiNT  &  \\
+295     & 0x127 & Prenice     & MiNT  &  \\
+296     & 0x128 & Dopendir    & MiNT  &  \\
+297     & 0x129 & Dreaddir    & MiNT  &  \\
+298     & 0x12A & Drewinddir  & MiNT  &  \\
+299     & 0x12B & Dclosedir   & MiNT  &  \\
+300     & 0x12C & Fxattr      & MiNT  &  \\
+301     & 0x12D & Flink       & MiNT  &  \\
+302     & 0x12E & Fsymlink    & MiNT  &  \\
+303     & 0x12F & Freadlink   & MiNT  &  \\
+304     & 0x130 & Dcntl       & MiNT  &  \\
+305     & 0x131 & Fchown      & MiNT  &  \\
+306     & 0x132 & Fchmod      & MiNT  &  \\
+307     & 0x133 & Pumask      & MiNT  &  \\
+308     & 0x134 & Psemaphore  & MiNT  &  \\
+309     & 0x135 & Dlock       & MiNT  &  \\
+310     & 0x136 & Psigpause   & MiNT  &  \\
+311     & 0x137 & Psigaction  & MiNT  &  \\
+312     & 0x138 & Pgeteuid    & MiNT  &  \\
+313     & 0x139 & Pgetegid    & MiNT  &  \\
+314     & 0x13A & Pwaitpid    & MiNT  &  \\
+315     & 0x13B & Dgetcwd     & MiNT  &  \\
+316     & 0x13C & Salert      & MiNT  &  \\
+\hline
+336     & 0x150 & Ssync       & Magic & sync mounted filesystems.\\
+\end{supertabular}
+
+\section{BIOS}
+\begin{supertabular}{|p{0.6cm}|p{1cm}|p{2cm}|p{1cm}|p{10cm}|}
+0       & 0x00  & Getmpb      & TOS   & Initialise MPB structure. \\
+1       & 0x01  & Bconstat    & TOS   & Check if a device has characters to read. \\
+2       & 0x02  & Bconin      & TOS   & Read a character from a device. \\
+3       & 0x03  & Bconout     & TOS   & Write a character to a device. \\
+4       & 0x04  & Rwabs       & TOS   & Read$/$write logical sectors. \\
+5       & 0x05  & Setexc      & TOS   & Set or read an exception vector. \\
+6       & 0x06  & Tickcal     & TOS   & Return the system timer calibration. \\
+7       & 0x07  & Getbpb      & TOS   & Return pointer to BPB for a device. \\
+8       & 0x08  & Bcostat     & TOS   & Determine if a device is ready to receive a character. \\
+9       & 0x09  & Mediach     & TOS   & Check if media has been changed on drive. \\
+10      & 0x0A  & Drvmap      & TOS   & Return a bitmap of known drives. \\
+11      & 0x0B  & Kbshift     & TOS   & Get the state of the modifier keys. \\
+17      & 0x11  &               &       & Assigned for DIAB630? \\
+\end{supertabular}
+
+\section{XBIOS}
+\begin{supertabular}{|p{0.7cm}|p{1.1cm}|p{4.0cm}|p{1cm}|p{7.8cm}|}
+0       & 0x00  & Initmous    & TOS   & initialize the mouse handler. \\
+1       & 0x01  & Ssbrk       & TOS   & Reserve memory at the top of RAM. \\
+2       & 0x02  & Physbase    & TOS   & Return the base address of the physical screen. \\
+3       & 0x03  & Logbase     & TOS   & Return the base address of the logical screen. \\
+4       & 0x04  & Getrez      & TOS   & Return the current video screen resolution code. \\
+5 $^\dag$& 0x05 $^\dag$ & Setscreen   & TOS   & Set the current screen address and mode. \\
+5 $^\dag$& 0x05 $^\dag$ & VsetScreen  & TOS   & Set the current screen address and mode (Falcon). \\
+6       & 0x06  & Setpalette  & TOS   & Set entries in the ST compatible palette. \\
+7       & 0x07  & Setcolor    & TOS   & Set an entry in the ST compatible palette. \\
+8       & 0x08  & Floprd      & TOS   & Read sector(s) from a floppy disk. \\
+9       & 0x09  & Flopwr      & TOS   & Write sector(s) to a floppy disk. \\
+10      & 0x0A  & Flopfmt     & TOS   & Format a track on a floppy disk. \\
+11      & 0x0B  & Dbmsg       & TOS   & Send a message to a resident debugger. \\
+12      & 0x0c  & Midiws      & TOS   & Write a string to the MIDI port. \\
+13      & 0x0D  & Mfpint      & TOS   & Set a MFP interrupt vector. \\
+14      & 0x0E  & lorec       & TOS   & Get the address of the IOREC structure for a BIOS device. \\
+15      & 0x0F  & Rsconf      & TOS   & Configure the currently mapped serial port. \\
+16      & 0x10  & Keytbl      & TOS   & Return the addresses of the current keyboard mapping tables. \\
+17      & 0x11  & Random      & TOS   & Return a 24-bit (pseudo-)random number. \\
+18      & 0x12  & Protobt     & TOS   & Create a floppy boot sector in memory. \\
+19      & 0x13  & Flopver     & TOS   & Verify sector(s) on a floppy disk. \\
+20      & 0x14  & Scrdump     & TOS   & Generate a screen dump on printer. \\
+21      & 0x15  & Cursconf    & TOS   & Configure the text mode cursor. \\
+22      & 0x16  & Settime     & TOS   & Set time$/$date in RTC. \\
+23      & 0x17  & Gettime     & TOS   & Read time$/$date from RTC. \\
+24      & 0x18  & Bioskeys    & TOS   & Reset the keyboard mapping tables to default values. \\
+25      & 0x19  & Ikbdws      & TOS   & Write a string to the IKBD chip. \\
+26      & 0x1A  & Jdisint     & TOS   & Disable a MFP interrupt. \\
+27      & 0x1B  & Jenabint    & TOS   & Enable a MFP interrupt. \\
+28      & 0x1C  & Giaccess    & TOS   & Read$/$Write a register in the PSG sound chip. \\
+29      & 0x1D  & Offgibit    & TOS   & Turn off bits on PSG Port A. \\
+30      & 0x1E  & Ongibit     & TOS   & Turn on bits on PSG Port A. \\
+31      & 0x1F  & Xbtimer     & TOS   & Set a MFP timer (value$/$vector). \\
+32      & 0x20  & Dosound     & TOS   & Start a PSG sound routine. \\
+33      & 0x21  & Setprt      & TOS   & Get$/$Set printer configuration. \\
+34      & 0x22  & Kbdvbase    & TOS   & Return the address of the KBDVECS IKBD/MIDI vector table. \\
+35      & 0x23  & Kbrate      & TOS   & Get$/$Set the keyboard repeat rate. \\
+36      & 0x24  & Prtblk      & TOS   & Print a block of memory using the built-in screen dump routines. \\
+37      & 0x25  & Vsync       & TOS   & Wait until the next vertical lank. \\
+38      & 0x26  & Supexec     & TOS   & Execute a subroutine in supervisor mode. \\
+39      & 0x27  & Puntaes     & TOS   & Remove AES (and reboot). \\
+41      & 0x29  & Floprate    & TOS 1.04 & Get$/$Set the floppy drive seek rates. \\
+42      & 0x2A  & DMAread     & TOS   & Read sectors from a DMA$/$SCSI device. \\
+43      & 0x2B  & DMAwrite    & TOS   & Write sectors to a DMA$/$SCSI device. \\
+44      & 0x2C  & Bconmap     & TOS 2 & Read or modify the BIOS device mapping table. \\
+46      & 0x2E  & NVMaccess   & TOS 3 & Read$/$Write non-volatile RAM. \\
+47      & 0x2F  & Waketime      & TOS 2 & Set Wakeup time in RTC (used by power.prg).\\
+\hline
+48      & 0x30  & Minit       & Meta- & Get MetaDOS version/drive map. \\
+49      & 0x31  & Mopen       & DOS   & \\
+50      & 0x32  & Mclose      & Meta- & \\
+51      & 0x33  & Mread       & DOS   & \\
+52      & 0x34  & Mwrite      & Meta- & \\
+53      & 0x35  & Mseek       & DOS   & \\
+54      & 0x36  & Mstatus     & Meta- & \\
+55      & 0x37  &               & DOS   & reserved for MetaDOS. \\
+56      & 0x38  &               & Meta- & reserved for MetaDOS. \\
+57      & 0x39  &               & DOS   & reserved for MetaDOS. \\
+58      & 0x3A  & CDread\_aud         & Meta- & \\
+59      & 0x3B  & CDstart\_aud        & DOS   & \\
+60      & 0x3C  & CDstop\_aud         & Meta- & \\
+61      & 0x3D  & CDset\_songtime     & DOS   & \\
+62      & 0x3E  & CDget\_toc          & Meta- & \\
+63      & 0x3F  & CDdisc\_info        & DOS   & \\
+\hline
+64      & 0x40  & Blitmode    & TOS   &   Get or set the state of the Blitter chip. \\
+\hline
+80      & 0x50  & EsetShift   & TOS   & Set the TT030 shift mode registers. \\
+81      & 0x51  & EgetShift   & TOS   & Get the TT030 shift mode registers. \\
+82      & 0x52  & EsetBank    & TOS   & Set the current TT030 color bank. \\
+83      & 0x53  & EsetColor   & TOS   & Get or set a colour in the TT030 palette. \\
+84      & 0x54  & EsetPalette & TOS   & Set the TT030 palette. \\
+85      & 0x55  & EgetPalette & TOS   & Read the TT030 palette. \\
+86      & 0x56  & EsetGray    & TOS   & Set the TT030 gray mode register. \\
+87      & 0x57  & EsetSmear   & TOS   & Set the TT030 smear mode register. \\
+\hline
+88      & 0x58  & VsetMode    & TOS   & Set the Falcon030 video mode. \\
+89      & 0x59  & VgetMonitor & TOS   & Identify the kind of monitor attached to the Falcon030. \\
+90      & 0x5A  & VsetSync    & TOS   & Set the Falcon030 sync mode. \\
+91      & 0x5B  & VgetSize    & TOS   & Get the required size of screen memory in bytes. \\
+92      & 0x5C  & VsetMask    & TOS   & Set the mask assigned to each true colour plotted. \\
+93      & 0x5D  & VsetRGB     & TOS   & Set the Falcon030 video palette. \\
+94      & 0x5E  & VgetRGB     & TOS   & Get the Falcon030 video palette. \\
+95      & 0x5F  & VcheckMode  & TOS   & modify video mode to match the possibilities of the attached monitor. \\
+\hline
+96      & 0x60  & Dsp\_DoBlock        & TOS   & Transfer byte-wise packed data to$/$from the DSP. \\
+97      & 0x61  & Dsp\_BlkHandshake   & TOS   & Handshakes byte-wise packed data to$/$from the DSP. \\
+98      & 0x62  & Dsp\_BlkUnpacked    & TOS   & Transfers data stored in a longword array to/from the DSP. \\
+99      & 0x63  & Dsp\_lnStream       & TOS   & Transfers data to the DSP via an interrupt handler. \\
+100     & 0x64  & Dsp\_OutStream      & TOS   & Transfers data from the DSP via an interrupt handler. \\
+101     & 0x65  & Dsp\_lOStream       & TOS   & Transfers data to/from the DSP via concurrent interrupt handlers. \\
+102     & 0x66  & Dsp\_Remove\-lnterrupts     & TOS   & Disable the generation of DSP interrupts. \\
+103     & 0x67  & Dsp\_GetWordSize    & TOS   & Get the current size of a DSP word. \\
+104     & 0x68  & Dsp\_Lock           & TOS   & Lock the DSP system. \\
+105     & 0x69  & Dsp\_Unlock         & TOS   & Unlock the DSP system. \\
+106     & 0x6A  & Dsp\_Available      & TOS   & Determines the amount of free X and Y memory available in the DSP. \\
+107     & 0x6B  & Dsp\_Reserve        & TOS   & Reserves a portion of DSP memory for a user program \\
+108     & 0x6C  & Dsp\_LoadProg       & TOS   & Loads a '.LOD' file from disk, transmits it to the DSP, and executes it. \\
+109     & 0x6D  & Dsp\_ExecProg       & TOS   & Transfers a DSP program in memory to the DSP and executes it. \\
+110     & 0x6E  & Dsp\_ExecBoot       & TOS   & Resets the DSP and loads a new bootstrap program into the first 512 words of DSP memory. \\
+111     & 0x6F  & Dsp\_LodToBinary    & TOS   & Converts a '.LOD' file to binary format. \\
+112     & 0x70  & Dsp\_TriggerHC      & TOS   & Causes a host command set aside for DSP programs to execute. \\
+113     & 0x71  & Dsp\_Request\-UniqueAbility & TOS   & Requests a unique DSP ability identifier. \\
+114     & 0x72  & Dsp\_GetProg\-Ability       & TOS   & Returns the ability code for the program residing in DSP memory. \\
+115     & 0x73  & Dsp\_Flush\-Subroutines     & TOS   & Removes all DSP subroutines from memory. \\
+116     & 0x74  & Dsp\_Load\-Subroutine       & TOS   & Loads a DSP subroutine into memory. \\
+117     & 0x75  & Dsp\_lnq\-SubrAbility       & TOS   & Determines if a subroutine with the specified ability code is currently loaded into the DSP. \\
+118     & 0x76  & Dsp\_Run\-Subroutine        & TOS   & Execution the specified subroutine in the DSP. \\
+119     & 0x77  & Dsp\_Hf0            & TOS   & Reads/writes bit \#3 of the HSR. \\
+120     & 0x78  & Dsp\_Hf1            & TOS   & Reads/writes bit \#4 of the HSR. \\
+121     & 0x79  & Dsp\_Hf2            & TOS   & Reads bit \#5 of the HSR. \\
+122     & 0x7A  & Dsp\_Hf3            & TOS   & Reads bit \#6 of the HSR. \\
+123     & 0x7B  & Dsp\_BlkWords       & TOS   & Transfers an array of WORDs to/from the DSP. \\
+124     & 0x7C  & Dsp\_BlkBytes       & TOS   & Transfers an array of bytes to/from the DSP. \\
+125     & 0x7D  & Dsp\_Hstat          & TOS   & Returns the value of the DSP's ICR register. \\
+126     & 0x7E  & Dsp\_SetVectors     & TOS   & Defines interrupt handlers to be called when DSP data is ready to be sent or received. \\
+127     & 0x7F  & Dsp\_MultBlocks     & TOS   & Transmits multiple blocks to/from the DSP. \\
+\hline
+128     & 0x80  & Locksnd     & TOS   & Lock the sound system. \\
+129     & 0x81  & Unlocksnd   & TOS   & Unlock the sound system. \\
+130     & 0x82  & Soundcmd    & TOS   & Execute a sound system specific function. \\
+131     & 0x83  & Setbuffer   & TOS   & Set the record and playback buffers. \\
+132     & 0x84  & Setmode     & TOS   & Set the playback/record mode. \\
+133     & 0x85  & Settracks   & TOS   & Set the playback/record tracks. \\
+134     & 0x86  & Setmontracks& TOS   & Set the track to be output over the speaker/headphone output. \\
+135     & 0x87  & Setinterrupt& TOS   & Set the sound system interrupts. \\
+136     & 0x88  & Buffoper    & TOS   & Enable or disable playback/recording. \\
+137     & 0x89  & Dsptristate & TOS   & Connect or disconnect the DSP from the connection matrix. \\
+138     & 0x8A  & Gpio        & TOS   & Read or write general purpose pins on the DSP port. \\
+139     & 0x8B  & Devconnect  & TOS   & Connect devices in the connection matrix. \\
+140     & 0x8C  & Sndstatus   & TOS   & Obtain the status of the sound system. \\
+141     & 0x8D  & Buffptr     & TOS   & Return the current position of the record or playback buffer pointers. \\
+\hline
+160     & 0xA0  & CacheCtrl   & Milan & Control CPU cache.\\
+161     & 0xA1  & WdgCtrl     & Milan & Control hardware watchdog.\\
+162     & 0xA2  & ExtRsConf   & Milan & extended RsConf for RS-422/RS-485 ports.\\
+165     & 0xA5  & WavePlay    & SAM   & Play a sample. \\
+500     & 0x1F4 & StarTrack     & SWE   & StarTrack extended XBIOS calls. \\
+4200    & 0x1068& Oscanis     & OverScan & \\
+4201    & 0x1069& Oscantab    & OverScan & \\
+4202    & 0x106A& Oscanphy    & OverScan & \\
+4203    & 0x106B& Oscanscr    & OverScan & \\
+4204    & 0x106C& Oscanvb     & OverScan & \\
+4205    & 0x106D& Oscanpatch  & OverScan & \\
+4206    & 0x106E& Oscanswitch & OverScan & \\
+50698   & 0xC60A& ct60\_read\_core\_temperature & CT060 & read CT060 CPU
+temperature \\
+50699   & 0xC60B& ct60\_rw\_parameter           & CT060 & set/query
+CT060 parameters \\
+
+\hline\multicolumn{5}{|l|}{$^\dag$ These functions share a common Opcode.} \\
+\end{supertabular}
+
+\section{AES}
+%\begin{supertabular}{|l|l|l|l|p{8cm}|}
+\begin{supertabular}{|p{0.6cm}|p{1cm}|p{2.7cm}|p{1.3cm}|p{9.0cm}|}
+10      & 0x0A  & appl\_init          & TOS   & initialises a GEM application. \\
+11      & 0x0B  & appl\_read          & TOS   & Reads data from the message pipe. \\
+12      & 0x0C  & appl\_write         & TOS   & Writes data to the message pipe. \\
+13      & 0x0D  & appl\_find          & TOS   & Locates a system process. \\
+14      & 0x0E  & appl\_tplay         & TOS   & Plays back recorded events. \\
+15      & 0x0F  & appl\_trecord       & TOS   & Records keyboard and mouse events. \\
+16      & 0x10  & appl\_bvset         & ???   & \\
+17      & 0x11  & appl\_yield         & Magic & \\
+18      & 0x12  & appl\_search        & TOS   & Enumerates system processes. \\
+19      & 0x13  & appl\_exit          & TOS   & Prepares a GEM application for termination. \\
+\hline
+20      & 0x14  & evnt\_keybd         & TOS   & Waits for a keyboard event. \\
+21      & 0x15  & evnt\_button        & TOS   & Waits for a mouse button event. \\
+22      & 0x16  & evnt\_mouse         & TOS   & Waits for a mouse rectangle event. \\
+23      & 0x17  & evnt\_mesag         & TOS   & Waits for an application message. \\
+24      & 0x18  & evnt\_timer         & TOS   & Waits for a timer event. \\
+25      & 0x19  & evnt\_multi         & TOS   & Waits for multiple events. \\
+26      & 0x1A  & evnt\_dclick        & TOS   & Sets the mouse double-click rate. \\
+\hline
+30      & 0x1E  & menu\_bar           & TOS   & Displays/removes a menu bar. \\
+31      & 0x1F  & menu\_icheck        & TOS   & Places a check mark beside a menu item. \\
+32      & 0x20  & menu\_ienable       & TOS   & Enables/disables a menu item \\
+33      & 0x21  & menu\_tnormal       & TOS   & Selects/deselects a menu item or title. \\
+34      & 0x22  & menu\_text          & TOS   & Changes menu item/title text. \\
+35      & 0x23  & menu\_register      & TOS   & Registers applications in the menu bar. \\
+36$^\dag$& 0x24 & menu\_unregister    & Magic & \\
+36$^\dag$& 0x24 & menu\_popup         & TOS   & Manages a floating pop-up menu. \\
+37$^\dag$& 0x25 & menu\_click         & Magic & \\
+37$^\dag$& 0x25 & menu\_attach        & TOS   & Attaches a sub-menu to a menu item. \\
+38      & 0x26  & menu\_istart        & TOS   & Defines the initial selection of a sub-menu. \\
+39      & 0x27  & menu\_settings      & TOS   & Modifies pop-up menu settings. \\
+\hline
+40      & 0x28  & objc\_add           & TOS   & Adds an object to an object tree. \\
+41      & 0x29  & objc\_delete        & TOS   & Deletes an object from an object tree. \\
+42      & 0x2A  & objc\_draw          & TOS   & Draws an object tree. \\
+43      & 0x2B  & objc\_find          & TOS   & Locates an object based on screen coordinates. \\
+44      & 0x2C  & objc\_offset        & TOS   & Determines the offset of child objects in an object tree. \\
+45      & 0x2D  & objc\_order         & TOS   & Reorders objects within an object tree. \\
+46      & 0x2E  & objc\_edit          & TOS   & Manipulates an editable object. \\
+47      & 0x2F  & objc\_change        & TOS   & Changes the state of an object. \\
+48      & 0x30  & objc\_sysvar        & TOS   & Reads/modifies the system defaults for 3D effects. \\
+\hline
+50      & 0x32  & form\_do            & TOS   & Manages a user-defined form. \\
+51      & 0x33  & form\_dial          & TOS   & Reserves/releases screen space for forms. \\
+52      & 0x34  & form\_alert         & TOS   & Manages a generic alert. \\
+53      & 0x35  & form\_error         & TOS   & Manages a generic error alert. \\
+54      & 0x36  & form\_center        & TOS   & Centers an object tree on screen. \\
+55      & 0x37  & form\_keybd         & TOS   & Provides a system-level editable field handler. \\
+56      & 0x38  & form\_button        & TOS   & Provides a system-level button handler. \\
+\hline
+70      & 0x46  & graf\_rubberbox     & TOS   & Controls the shrinking/enlarging of a box outline. \\
+71      & 0x47  & graf\_dragbox       & TOS   & Controls the moving of a box outline. \\
+72      & 0x48  & graf\_movebox       & TOS   & Draws a moving box \\
+73      & 0x49  & graf\_growbox       & TOS   & Draws an expanding box. \\
+74      & 0x50  & graf\_shrinkbox     & TOS   & Draws a shrinking box. \\
+75      & 0x51  & graf\_watchbox      & TOS   & Selects/draws an object depending on the position of the mouse. \\
+76      & 0x52  & graf\_slidebox      & TOS   & Controls a slider outline. \\
+77      & 0x53  & graf\_handle        & TOS   & Obtains AES workstation attributes. \\
+78      & 0x54  & graf\_mouse         & TOS   & Defines the mouse form. \\
+79      & 0x55  & graf\_mkstate       & TOS   & Provides information about the mouse state. \\
+\hline
+80      & 0x56  & scrp\_read          & TOS   & Determines the system scrap directory. \\
+81      & 0x57  & scrp\_write         & TOS   & Sets the system scrap directory. \\
+\hline
+90      & 0x58  & fsel\_input         & TOS   & Manages the file selector. \\
+91      & 0x59  & fsel\_exinput       & TOS   & Manages the extended file selector. \\
+\hline
+100     & 0x64  & wind\_create        & TOS   & Creates a window. \\
+101     & 0x65  & wind\_open          & TOS   & Opens a window. \\
+102     & 0x66  & wind\_close         & TOS   & Closes a window. \\
+103     & 0x67  & wind\_delete        & TOS   & Deletes a window. \\
+104     & 0x68  & wind\_get           & TOS   & Returns window attributes. \\
+105     & 0x69  & wind\_set           & TOS   & Sets a window attribute. \\
+106     & 0x6A  & wind\_find          & TOS   & Determines the window at given pixel coordinates. \\
+107     & 0x6B  & wind\_update        & TOS   & Manages the window update semaphore. \\
+108     & 0x6C  & wind\_calc          & TOS   & Calculates window extents. \\
+109     & 0x6D  & wind\_new           & TOS   & Removes all windows. \\
+\hline
+110     & 0x6E  & rsrc\_load          & TOS   & Loads a disk-based resource file. \\
+111     & 0x6F  & rsrc\_free          & TOS   & Releases a resource file from memory. \\
+112     & 0x70  & rsrc\_gaddr         & TOS   & Calculates the address of a resource element. \\
+113     & 0x71  & rsrc\_saddr         & TOS   & Sets the address of a resource element. \\
+114     & 0x72  & rsrc\_obfix         & TOS   & Changes object coordinates from character to pixel based. \\
+115     & 0x73  & rsrc\_rcfix         & MTOS? & fix up a resource file already in memory. \\
+\hline
+120     & 0x78  & shel\_read          & TOS   & Determines the processes parent and command tall. \\
+121     & 0x79  & shel\_write         & TOS   & Manages process loading and control. \\
+122     & 0x7A  & shel\_get           & TOS   & Copies data from the system's shell buffer. \\
+123     & 0x7B  & shel\_put           & TOS   & Stores data in the system's shell buffer. \\
+124     & 0x7C  & shel\_find          & TOS   & Searches the AES's path for a file. \\
+125     & 0x7D  & shel\_envrn         & TOS   & Searches the system environment string. \\
+126     & 0x7E  & shel\_rdef          & PCGEM & Inquire default shell program\\
+127     & 0x7F  & shel\_wdef          & PCGEM & Set a new default shell program.\\
+\hline
+130     & 0x82  & appl\_getinfo       & TOS   & Returns information about the AES. \\
+135     & 0x87  & form\_popup         & Magic & \\
+136     & 0x88  & form\_xerr          & Magic & \\
+\hline
+160     & 0xA0  & wdlg\_create        & Wdialog & \\
+161     & 0xA1  & wdlg\_open          & Wdialog & \\
+162     & 0xA2  & wdlg\_close         & Wdialog & \\
+163     & 0xA3  & wdlg\_delete        & Wdialog & \\
+164     & 0xA4  & wdlg\_get           & Wdialog & \\
+165     & 0xA5  & wdlg\_set           & Wdialog & \\
+166     & 0xA6  & wdlg\_evnt          & Wdialog & \\
+167     & 0xA7  & wdlg\_redraw        & Wdialog & \\
+\hline
+170     & 0xAA  & lbox\_create        & Wdialog & \\
+171     & 0xAB  & lbox\_update        & Wdialog & \\
+172     & 0xAC  & lbox\_do            & Wdialog & \\
+173     & 0xAD  & lbox\_delete        & Wdialog & \\
+174     & 0xAE  & lbox\_get           & Wdialog & \\
+175     & 0xAF  & lbox\_set           & Wdialog & \\
+\hline
+180     & 0xB4  & fnts\_create        & Wdialog & \\
+181     & 0xB5  & fnts\_delete        & Wdialog & \\
+182$^\dag$& 0xB6 $^\dag$        & fnts\_open  & Wdialog & \\
+182$^\dag$& 0xB6 $^\dag$        & fnts\_do    & Wdialog & \\
+183     & 0xB7  & fnts\_close         & Wdialog & \\
+184     & 0xB8  & fnts\_get\_info     & Wdialog & \\
+185     & 0xB9  & fnts\_set           & Wdialog & \\
+186     & 0xBA  & fnts\_evnt          & Wdialog & \\
+\hline
+190     & 0xBE  & fslx\_open          & Magic & \\
+191     & 0xBF  & fslx\_close         & Magic & \\
+192     & 0xC0  & fslx\_getnxtfile    & Magic & \\
+193     & 0xC1  & fslx\_evnt          & Magic & \\
+194     & 0xC2  & fslx\_do            & Magic & \\
+195     & 0xC3  & fslx\_set\_flags    & Magic & \\
+\hline\multicolumn{5}{|l|}{$^\dag$ These functions share a common Opcode.} \\
+\end{supertabular}
+
+\section{VDI}
+\tablehead{\hline Dec.  & Name  & By & Description \\ \hline}
+\tabletail{\hline\multicolumn{4}{|r|}{\small\slshape continued ...}\\\hline}
+\tablelasttail{\hline}
+%\begin{supertabular}{|l|l|l|p{8cm}|}
+\begin{supertabular}{|p{1.8cm}|p{3.0cm}|p{1.5cm}|p{8.7cm}|}
+---             & vq\_gdos            & TOS   & Test for presence of GDOS. \\
+-1, 6           & v\_set\_app\_buff   &       &  \\
+1               & v\_opnwk            & TOS   & Open a physical workstation. \\
+2               & v\_clswk            & TOS   & Close a physical workstation. \\
+3               & v\_clrwk            & TOS   & Clear a physical workstation. \\
+4               & v\_updwk            & TOS   & Update workstation. \\
+5, 1            & vq\_chcells         & TOS   & Get alpha screen size. \\
+5, 2            & v\_exit\_cur        & TOS   & Exit alpha text mode. \\
+5, 3            & v\_enter\_cur       & TOS   & Enter alpha text mode. \\
+5, 4            & v\_curup            & TOS   & Move alpha text cursor up. \\
+5, 5            & v\_curdown          & TOS   & Move alpha text cursor down. \\
+5, 6            & v\_curright         & TOS   & Move alpha text cursor right. \\
+5, 7            & v\_curleft          & TOS   & Move alpha text cursor left. \\
+5, 8            & v\_curhome          & TOS   & Move alpha text cursor home. \\
+5, 9            & v\_eeos             & TOS   & Erase to end of alpha screen. \\
+5,10            & v\_eeol             & TOS   & Erase to end of alpha text line. \\
+5,11            & vs\_curaddress      & TOS   & Set alpha text cursor position. \\
+5,12            & v\_curtext          & TOS   & Output alpha text. \\
+5,13            & v\_rvon             & TOS   & Reverse alpha text on. \\
+5,14            & v\_rvoff            & TOS   & Reverse alpha text off. \\
+5,15            & vq\_curaddress      & TOS   & Inquire alpha text cursor location. \\
+5,16            & vq\_tabstatus       & TOS   & Get availability of tablet. \\
+5,17            & v\_hardcopy         & TOS   & Output screen to printer. \\
+5,18            & v\_dspcur           & TOS   & Set graphics cursor position. \\
+5,19            & v\_rmcur            & TOS   & Remove graphic cursor. \\
+5,20            & v\_form\_adv        & GDOS  & Advance printer page. \\
+5,21            & v\_output\_window   & GDOS  & Output window of page to printer. \\
+5,22            & v\_clear\_disp\_list& GDOS  & Clear display list. \\
+5,23            & v\_bit\_image       & GDOS  & Output bit image file. \\
+5,24            & vq\_scan            & GDOS  & Inquire printer parameters. \\
+5,25            & v\_alpha\_text      & TOS   & Output printer alpha text. \\
+5,27            & v\_orient           & NVDI  & Set orientation.\\
+5,28            & v\_copies           & NVDI  & Set number of copies.\\
+5,29            & v\_trays            & NVDI  & Set input and output tray.\\
+5,36            & vq\_tray\_names     & NVDI  & Inquire tray names.\\
+5,37            & vq\_page\_size      & NVDI  & Set page size.\\
+5,38            & vq\_page\_name      & NVDI  & Inquire page name.\\
+5,60            & vs\_palette         & PC-GEM& Set IBM CGA colour palette. \\
+5,61            & v\_sound            & PC-GEM& Generate specified tone. \\
+5,62            & vs\_mute            & PC-GEM& Set/clear tone muting flag. \\
+5,76            & vs\_calibrate       & NVDI  & Set calibration.\\
+5,77            & vq\_calibrate       & NVDI  & Inquire calibration.\\
+5,81            & vt\_resolution      & ?     & Set tablet resolution in $lines/inch$. \\
+5,82            & vt\_axis            &       & Set tablet axis resolution. \\
+5,83            & vt\_origin          &       & Set tablet origin. \\
+5,84            & vq\_tdimensions     &       & Return tablet X and Y dimensions. \\
+5,85            & vt\_alignment       &       & Set tablet alignment. \\
+5,91            & vqp\_films          &       & Return camera film types. \\
+5,92            & vqp\_state          &       & Return camera driver state. \\
+5,93            & vsp\_state          &       & Set camera driver state. \\
+5,94            & vsp\_save           &       & Save camera driver state. \\
+5,95            & vsp\_message        &       & Suppress camera screen messages. \\
+5,96            & vqp\_error          &       & Return camera error status. \\
+5,98            & v\_meta\_extents    &       & Specify metafile bounding box. \\
+5,99 $^\dag$    & v\_write\_meta      &       & Write metafile item. \\
+5,99,0 $^\dag$  & vm\_pagesize        &       & Set metafile page size. \\
+5,99,1 $^\dag$  & vm\_coords          &       & Set metafile coordinate system. \\
+5,99,32,1 $^\dag$ & v\_bez\_qual      & NVDI  & Set bezier quality. \\
+5,100           & vm\_filename        &       & Set metafile filename. \\
+5,102           & v\_fontinit         &       & Select a new system font. \\
+5,2000          & v\_pgcount          &       & Specify laser printer copies. \\
+6,0             & v\_pline            & TOS   & Draw a polyline. \\
+6,13            & v\_bez              & NVDI  & Draw a bezier curve. \\
+7               & v\_pmarker          & TOS   & Draw polymarkers. \\
+8               & v\_gtext            & TOS   & Output graphic text. \\
+9,0             & v\_fillarea         & TOS   & Draw a filled polygon. \\
+9,13            & v\_bez\_fill        & NVDI  & Draw a filled bezier curve. \\
+10              & v\_cellarray        & TOS$^1$       & Draw a cell array. \\
+11,1            & v\_bar              & TOS   & Draw a filled rectangle. \\
+11,2            & v\_arc              & TOS   & Draw an arc. \\
+11,3            & v\_pieslice         & TOS   & Draw a pieslice. \\
+11,4            & v\_circle           & TOS   & Draw a circle. \\
+11,5            & v\_ellipse          & TOS   & Draw an ellipse. \\
+11,6            & v\_ellarc           & TOS   & Draw an elliptical arc. \\
+11,7            & v\_ellpie           & TOS   & Draw an elliptical pie segment. \\
+11,8            & v\_rbox             & TOS   & Draw a rounded rectangle. \\
+11,9            & v\_rfbox            & TOS   & Draw a filled rounded rectangle. \\
+11,10           & v\_justified        & TOS   & Output justified text. \\
+11,13 $^\dag$   & v\_bez\_off         & NVDI  & Disable bezier drawing. \\
+11,13 $^\dag$   & v\_bez\_on          & NVDI  & Enable bezier drawing. \\
+12              & vst\_height         & TOS   & Set character height (in pixels). \\
+13              & vst\_rotation       & TOS   & Set character baseline vector. \\
+14              & vs\_color           & TOS   & Set colour in colour palette. \\
+15              & vsl\_type           & TOS   & Set polyline line type. \\
+16              & vsl\_width          & TOS   & Set polyline line width. \\
+17              & vsl\_color          & TOS   & Set polyline colour index. \\
+18              & vsm\_type           & TOS   & Set polymarker type. \\
+19              & vsm\_height         & TOS   & Set polymarker height. \\
+20              & vsm\_color          & TOS   & Set polymarker colour index. \\
+21              & vst\_font           & TOS   & Set text face (font). \\
+22              & vst\_color          & TOS   & Set graphic text colour index. \\
+23              & vsf\_interior       & TOS   & Set fill interior type. \\
+24              & vsf\_style          & TOS   & Set fill style index. \\
+25              & vsf\_color          & TOS   & Set fill colour index. \\
+26              & vq\_color           & TOS   & Inquire colour palette entry. \\
+27              & vq\_cellarray       & TOS   & Inquire cell array. \\
+28 $^\dag$      & vrq\_locator        & TOS   & Set/get graphic cursor, request mode. \\
+28 $^\dag$      & vsm\_locator        & TOS   & Set/get graphic cursor, sample mode. \\
+29 $^\dag$      & vrq\_valuator       & TOS$^1$       & Input valuator, request mode. \\
+29 $^\dag$      & vsm\_valuator       & TOS$^1$       & Input valuator, sample mode. \\
+30 $^\dag$      & vrq\_choice         & TOS$^1$       & Input choice, request. \\
+30 $^\dag$      & vsm\_choice         & TOS$^1$       & Input choice, sample mode. \\
+31 $^\dag$      & vrq\_string         & TOS   & Input string, request mode. \\
+31 $^\dag$      & vsm\_string         & TOS   & Input string, sample mode. \\
+32              & vswr\_mode          & TOS   & Set writing mode. \\
+33              & vsin\_mode          & TOS   & Set input mode (sample/request). \\
+35              & vql\_attributes     & TOS   & Get polyline attributes. \\
+36              & vqm\_attributes     & TOS   & Get polymarker attributes. \\
+37              & vqf\_attributes     & TOS   & Get fill area attributes. \\
+38              & vqt\_attributes     & TOS   & Get graphic text attributes. \\
+39              & vst\_alignment      & TOS   & Set graphic text alignment. \\
+100,0           & v\_opnvwk           & TOS   & Open a virtual screen workstation. \\
+100,1           & v\_opnbm            & NVDI  & Open offscreen bitmap.\\
+101,0           & v\_clsvwk           & TOS   & Close a virtual screen workstation. \\
+101,1           & v\_clsbm            & NVDI  & Close offscreen bitmap.\\
+102,0           & vq\_extnd           & TOS   & Extended inquire. \\
+102,1           & vq\_scrninfo        & NVDI  & Inquire screen information.\\
+103             & v\_contourfill      & TOS   & Fill a region. \\
+104             & vsf\_perimeter      & TOS   & Set fill perimeter visibility. \\
+105             & v\_get\_pixel       & TOS   & Read screen pixel value and colour index. \\
+106             & vst\_effects        & TOS   & Set graphic text special effects. \\
+107             & vst\_point          & TOS   & Set character height (in point). \\
+108             & vsl\_ends           & TOS   & Set polyline end styles. \\
+109             & vro\_cpyfm          & TOS   & Copy raster, opaque. \\
+110             & vr\_trnfm           & TOS   & Transform raster form. \\
+111             & vsc\_form           & TOS   & Set mouse form. \\
+112             & vsf\_udpat          & TOS   & Set user-defined fill pattern. \\
+113             & vsl\_udsty          & TOS   & Set user-defined line style pattern. \\
+114             & vr\_recfl           & TOS   & Draw a filled rectangle. \\
+115             & vqin\_mode          & TOS   & Get input mode for device. \\
+116             & vqt\_extent         & TOS   & Get graphic text extent. \\
+117             & vqt\_width          & TOS   & Get graphic character cell width. \\
+118             & vex\_timv           & TOS   & Exchange timer interrupt vector. \\
+119             & vst\_load\_fonts    & GDOS  & Load fonts. \\
+120             & vst\_unload\_fonts  & GDOS  & Unload fonts. \\
+121             & vrt\_cpyfm          & TOS   & Copy raster, transparent. \\
+122             & v\_show\_c          & TOS   & Show mouse cursor. \\
+123             & v\_hide\_c          & TOS   & Hide mouse cursor. \\
+124             & vq\_mouse           & TOS   & Get mouse position and state. \\
+125             & vex\_butv           & TOS   & Exchange mouse button change vector. \\
+126             & vex\_motv           & TOS   & Exchange mouse movement vector. \\
+127             & vex\_curv           & TOS   & Exchange mouse cursor change vector. \\
+128             & vq\_key\_s          & TOS   & Get keyboard shift state information. \\
+129             & vs\_clip            & TOS   & Set clipping rectangle. \\
+130             & vqt\_name           & TOS   & Get font name and index. \\
+131             & vqt\_fontinfo       & TOS   & Return font size information. \\
+132             & vqt\_justified      & PC-GEM& Inquire justified graphics text.\\
+133             & vs\_grayoverride      & NVDI? & \\
+134             & vex\_wheelv         & Milan & Exchange mouse wheel change vector. \\
+190             & vqt\_char\_index    & NVDI  & Convert character index to ASCII or Unicode. \\
+229             & vqt\_xfntinfo       & NVDI  & Inquire extended font information. \\
+230,0           & vst\_name           & NVDI  & Set font by name. \\
+230,100         & vqt\_name\_and\_id  & NVDI  & Inquire font ID and name by name. \\
+231             & vst\_width          & NVDI  & Set character width in pixels. \\
+232             & vqt\_fontheader     & NVDI  & Get Speedo font header. \\
+234             & vqt\_trackkern      & NVDI  & Inquire track kerning information. \\
+235             & vqt\_pairkern       & NVDI  & Inquire pair kerning information. \\
+236 $^\dag$     & vst\_charmap        & NVDI  & Switch between ASCII and direct mapping. \\
+236 $^\dag$     & vst\_map\_mode      & NVDI  & Switch between ASCII, Unicode and direct mapping. \\
+237 $^\dag$     & vst\_kern           & NVDI  & Select track/pair kerning mode. \\
+237 $^\dag$     & vst\_track\_offset  & NVDI  & Set user defined track kerning. \\
+239             & v\_getbitmap\_info  & NVDI  & Get character bitmap information. \\
+240,0 $^\dag$   & vqt\_f\_extent      & NVDI  & Inquire outline font text extent. \\
+240,4200 $^\dag$& vqt\_real\_extent   & NVDI  & Inquire real outline font text extent. \\
+240 $^\dag$     & vqt\_f\_extent16    &       &  \\
+241 $^\dag$     & v\_ftext            & NVDI  & Output outline font text. \\
+241 $^\dag$     & v\_ftext\_offset    & NVDI  & Output outline font text with individual offsets. \\
+241 $^\dag$     & vftext16            &       &  \\
+241 $^\dag$     & v\_ftext\_offset    &       &  \\
+241 $^\dag$     & v\_ftext\_offset16  &       &  \\
+242             & v\_killoutline      &       &  \\
+243             & v\_getoutline       & NVDI  & Get bezier outline for a character. \\
+244             & vst\_scratch        &       &  \\
+245             & vst\_error          &       &  \\
+246 $^\dag$     & vst\_arbpt          &       &  \\
+246 $^\dag$     & vst\_arbpt32        & NVDI  & Set character height by arbitrary points. \\
+247 $^\dag$     & vqt\_advance        &       &  \\
+247 $^\dag$     & vqt\_advance32      & NVDI  & Inquire text advance placement vector. \\
+248,0           & vq\_devinfo         & NVDI  & Inquire device status information. \\
+248,4242        & vq\_ext\_devinfo    & NVDI  & Inquire extended device status information. \\
+249             & v\_savecache        &       &  \\
+250             & v\_loadcache        &       &  \\
+251             & v\_flushcache       & NVDI  & Flush outline font cache. \\
+252 $^\dag$     & vst\_setsize        &       &  \\
+252 $^\dag$     & vst\_setsize32      & NVDI  & Set character cell width by arbitrary points. \\
+253             & vst\_skew           & NVDI  & Set outline font skew. \\
+254             & vqt\_get\_table     &       &  \\
+255             & vqt\_cachesize      &       &  \\
+\hline\multicolumn{4}{|l|}{$^\dag$ These functions share a common Opcode.} \\
+\multicolumn{4}{|l|}{$^1$ not implemented in ROM VDI.} \\
+\end{supertabular}
+
+\end{document}
+% LocalWords:  GEMDOS Dec Hex Sconfig Ssync DIAB CacheCtrl StarTrack SWE vset
+
+% LocalWords:  StarTrack Oscanis OverScan Oscantab Oscanphy Oscanscr Oscanvb rc
+% LocalWords:  Oscanpatch Oscanswitch nregister MTOS def PCGEM wdlg vnt Pterm
+% LocalWords:  Wdialog NVDI  Cconin Cconout Cauxin Cauxout Cprnout Crawio MPB
+% LocalWords:  Crawcin Cnecin Cconws Cconrs Cconis Dsetdrv Cconos Cprnos Cauxis
+% LocalWords:  Cauxos Maddalt Dgetdrv Fsetdta MFP IOREC RTC IKBD KBDVECS PSG TT
+% LocalWords:  MetaDOS Blitter DSP cachesize setsize vqt Tgetdate Tsetdate Fdup
+% LocalWords:  Tgettime Tsettime Fgetdta Sversion Ptermres Dfree Dcreate Fopen
+% LocalWords:  Ddelete Dsetpath Fcreate Fclose Fread Fwrite Fdelete Fseek Mfree
+% LocalWords:  Fattrib Mxalloc Fforce Dgetpath Malloc Mshrink Pexec Fsfirst prg
+% LocalWords:  Fsnext Frename Fdatime Syield Fpipe Fcntl Finstat Foutstat Pwait
+% LocalWords:  Fgetchar Fputchar Pnice Pgetpid Pgetppid Pgetpgrp Psetpgrp Pkill
+% LocalWords:  Pgetuid Psetuid Psignal Pvfork Pgetgid Psetgid Psigblock Pusrval
+% LocalWords:  Psigsetmask Pdomain Psigreturn Pfork Fselect Prusage Psetlimit
+% LocalWords:  Talarm Sysconf Psigpending Dpathconf Pmsg Fmidipipe Prenice Dsp
+% LocalWords:  Dopendir Dreaddir Drewinddir Dclosedir Fxattr Flink Fsymlink LOD
+% LocalWords:  Freadlink Dcntl Fchown Fchmod Pumask Psemaphore Dlock Psigpause
+% LocalWords:  Psigaction Pgeteuid Pgetegid Pwaitpid Dgetcwd Salert Getmpb DSPs
+% LocalWords:  Bconstat Bconin Bconout Rwabs Setexc Tickcal Getbpb Bcostat Hf
+% LocalWords:  Mediach Drvmap Kbshift Initmous Ssbrk Physbase Logbase Getrez vq
+% LocalWords:  Setscreen VsetScreen Setpalette Setcolor Floprd Flopwr Flopfmt
+% LocalWords:  Dbmsg Midiws Mfpint lorec Rsconf Keytbl Protobt Flopver Scrdump
+% LocalWords:  Cursconf Settime Gettime Bioskeys Ikbdws Jdisint Jenabint Setprt
+% LocalWords:  Giaccess Offgibit Ongibit Xbtimer Dosound Kbdvbase Kbrate Prtblk
+% LocalWords:  Vsync Supexec Puntaes Floprate DMAread DMAwrite Bconmap Waketime
+% LocalWords:  NVMaccess Minit Mopen Mclose Mread Mwrite Mseek Mstatus CDread
+% LocalWords:  CDstart CDstop CDset CDget CDdisc Blitmode EsetShift EgetShift
+% LocalWords:  EsetBank EsetColor EsetPalette EgetPalette EsetGray EsetSmear vr
+% LocalWords:  VsetMode VgetMonitor VsetSync VgetSize VsetMask VsetRGB VgetRGB
+% LocalWords:  VcheckMode WORDs DSP's BlkWords BlkBytes Hstat SetVectors lnq
+% LocalWords:  MultBlocks SubrAbility GetProg UniqueAbility TriggerHC ExecBoot
+% LocalWords:  LodToBinary ICR Locksnd Unlocksnd Soundcmd Setbuffer Setmode vql
+% LocalWords:  Settracks Setmontracks Setinterrupt Buffoper Dsptristate Gpio
+% LocalWords:  Devconnect Sndstatus Buffptr WavePlay appl evnt objc fsel rsrc
+% LocalWords:  shel lbox fnts fslx vswr vsin vqm vqf offscreen vro vsc vqin vrt
+% LocalWords:  Unicode kerning vftext outfile aud songtime toc DoBlock lnStream
+% LocalWords:  BlkHandshake BlkUnpacked OutStream lOStream lnterrupts LoadProg
+% LocalWords:  GetWordSize ExecProg init tplay trecord bvset keybd mesag dclick
+% LocalWords:  icheck ienable tnormal popup istart sysvar rubberbox dragbox app
+% LocalWords:  movebox growbox shrinkbox watchbox slidebox mkstate exinput calc
+% LocalWords:  gaddr saddr obfix rcfix envrn rdef wdef getinfo xerr getnxtfile
+% LocalWords:  gdos opnwk clswk clrwk updwk chcells curup curdown curright eeos
+% LocalWords:  curleft curhome eeol curaddress curtext rvon rvoff tabstatus adv
+% LocalWords:  dspcur rmcur disp tdimensions coords bez qual fontinit pgcount
+% LocalWords:  pline pmarker gtext fillarea cellarray ellarc ellpie rbox rfbox
+% LocalWords:  opnvwk opnbm clsvwk clsbm extnd scrninfo contourfill cpyfm trnfm
+% LocalWords:  udpat udsty recfl timv butv motv curv fontinfo xfntinfo pairkern
+% LocalWords:  fontheader trackkern charmap getbitmap ftext killoutline arbpt
+% LocalWords:  getoutline devinfo savecache loadcache flushcache

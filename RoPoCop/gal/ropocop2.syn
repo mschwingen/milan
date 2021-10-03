@@ -1,0 +1,7 @@
+JDF B
+// Created by Version 3.00 
+PROJECT Untitled
+DESIGN ropocop2 Normal
+DEVKIT GAL16V8
+MODULE ropocop.abl
+MODSTYLE ropocop Normal

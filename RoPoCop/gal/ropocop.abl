@@ -1,0 +1,38 @@
+MODULE ROPOCOP
+
+TITLE 'ROPOCOP for Milan'
+
+// 16 Bit Memory: !MEMCS16 = 0
+// SA0  !SBHE  D0..D7  D8..D15     UDS  LDS
+//  0      0   addr0    addr1       0    0
+//  1      0            addr1       1    0
+//  0      1   addr0                0    1
+
+A23,A22,A21,A20	pin 2,3,4,5;
+A16,A17,A18,A19	pin 6,7,8,9;
+!BALE		pin 11;              " New for V2
+!SMEMR		pin 1;               " New for V2
+
+!ENA245		pin 19;
+!MEMCS16        pin 12;              " New for V2
+
+!ROM3A,!ROM4A	pin 13,14;
+!ROM3B,!ROM4B	pin 15,16;
+!ROM3C,!ROM4C	pin 17,18;
+
+ADDR = [A23,A22,A21,A20,A19,A18,A17,A16];
+
+//BALE = 1;
+
+EQUATIONS
+MEMCS16 = (ADDR >= ^h02) & (ADDR <= ^h7);
+ENA245 = (ADDR >= ^h02) & (ADDR <= ^h7) & SMEMR & BALE;
+ROM4A  = (ADDR == ^h02) & SMEMR & BALE;
+ROM3A  = (ADDR == ^h03) & SMEMR & BALE;
+ROM4B  = (ADDR == ^h04) & SMEMR & BALE;
+ROM3B  = (ADDR == ^h05) & SMEMR & BALE;
+ROM4C  = (ADDR == ^h06) & SMEMR & BALE;
+ROM3C  = (ADDR == ^h07) & SMEMR & BALE;
+
+END
+

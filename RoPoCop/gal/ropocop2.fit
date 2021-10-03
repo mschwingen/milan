@@ -1,0 +1,6 @@
+$DEVICE         P16V8AS    fit    ropocop2.tt3
+$PINS   18  ROM4C:18   ROM3C:17   ROM4B:16   ROM3B:15   ROM4A:14   ROM3A:13   MEMCS16:12   
+ENA245:19   BALE:11   SMEMR:1   A16:6   A17:7   A18:8   A19:9   
+A20:5   A21:4   A22:3   A23:2   
+--------------------------------------------------------------
+

@@ -1,0 +1,128 @@
+Synario 3.00
+
+Design ropocop2 created Mon May 29 20:27:25 2000
+
+Title:  ROPOCOP for Milan
+
+ P-Terms   Fan-in  Fan-out  Type  Name (attributes)
+---------  ------  -------  ----  -----------------
+   8/2        9        1    Pin   ENA245 
+   6/2        7        1    Pin   MEMCS16 
+  10/1       10        1    Pin   ROM3A 
+  10/1       10        1    Pin   ROM4A 
+  10/1       10        1    Pin   ROM3B 
+  10/1       10        1    Pin   ROM4B 
+  10/1       10        1    Pin   ROM3C 
+  10/1       10        1    Pin   ROM4C 
+=========
+  74/10         Best P-Term Total: 10
+                       Total Pins: 18
+                      Total Nodes: 0
+            Average P-Term/Output: 1
+
+
+Equations:
+
+ENA245 = (A23
+     # A22
+     # A21
+     # A20
+     # A19
+     # SMEMR
+     # BALE
+     # !A18 & !A17);
+
+MEMCS16 = (A23
+     # A22
+     # A21
+     # A20
+     # A19
+     # !A18 & !A17);
+
+ROM3A = (A23
+     # A22
+     # A21
+     # A20
+     # A19
+     # A18
+     # !A17
+     # !A16
+     # SMEMR
+     # BALE);
+
+ROM4A = (A23
+     # A22
+     # A21
+     # A20
+     # A19
+     # A18
+     # !A17
+     # A16
+     # SMEMR
+     # BALE);
+
+ROM3B = (A23
+     # A22
+     # A21
+     # A20
+     # A19
+     # !A18
+     # A17
+     # !A16
+     # SMEMR
+     # BALE);
+
+ROM4B = (A23
+     # A22
+     # A21
+     # A20
+     # A19
+     # !A18
+     # A17
+     # A16
+     # SMEMR
+     # BALE);
+
+ROM3C = (A23
+     # A22
+     # A21
+     # A20
+     # A19
+     # !A18
+     # !A17
+     # !A16
+     # SMEMR
+     # BALE);
+
+ROM4C = (A23
+     # A22
+     # A21
+     # A20
+     # A19
+     # !A18
+     # !A17
+     # A16
+     # SMEMR
+     # BALE);
+
+
+Reverse-Polarity Equations:
+
+!ENA245 = (!A23 & !A22 & !A21 & !A20 & !A19 & A18 & !SMEMR & !BALE
+     # !A23 & !A22 & !A21 & !A20 & !A19 & A17 & !SMEMR & !BALE);
+
+!MEMCS16 = (!A23 & !A22 & !A21 & !A20 & !A19 & A18
+     # !A23 & !A22 & !A21 & !A20 & !A19 & A17);
+
+!ROM3A = (!A23 & !A22 & !A21 & !A20 & !A19 & !A18 & A17 & A16 & !SMEMR & !BALE);
+
+!ROM4A = (!A23 & !A22 & !A21 & !A20 & !A19 & !A18 & A17 & !A16 & !SMEMR & !BALE);
+
+!ROM3B = (!A23 & !A22 & !A21 & !A20 & !A19 & A18 & !A17 & A16 & !SMEMR & !BALE);
+
+!ROM4B = (!A23 & !A22 & !A21 & !A20 & !A19 & A18 & !A17 & !A16 & !SMEMR & !BALE);
+
+!ROM3C = (!A23 & !A22 & !A21 & !A20 & !A19 & A18 & A17 & A16 & !SMEMR & !BALE);
+
+!ROM4C = (!A23 & !A22 & !A21 & !A20 & !A19 & A18 & A17 & !A16 & !SMEMR & !BALE);
+

@@ -1,0 +1,12 @@
+- find_multi_device removed. The bios can handle this transparent by
+  reporting a single device (with a different handle) for each function.
+- the resource descriptors are back - Torsten correctly stated that they
+  are necessary so that a driver can find out the length of a resource
+  without writing to the config space of the card, which he is not allowed
+  to (great thing, CVS :-))
+- callback: the state can be set back to 'free'. Added code for 'can be
+  removed without callback'.
+- new: get_machine_id (Torsten's proposal)
+- removed interrupt line from (un)hook interrupt. The BIOS can read this
+  from the config space of the device.
+
