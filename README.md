@@ -7,6 +7,8 @@ which was developed around 1998 in Germany.
 
 [PCI-Bios Specification](PCI-Bios/)
 
+[RomPortConnector-PCB](RoPoCop/)
+
 [pci.lzh: sample code for PCI device drivers](pci.lzh)
 
 [milan_hw.txt: hardware layout / IO address documentation](milan_hw.txt)
