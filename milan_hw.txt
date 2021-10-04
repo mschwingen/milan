@@ -6,13 +6,24 @@ Memory layout:
 
 $00000000 - _phystop	ST-RAM
 $00E00000 - $00E7FFFF	TOS
+$00FA0000 - $00FBFFFF   ROM port area [3]
+$00FE0000 - $00FFFFFF   writable alias mapping of rom-port memory in case
+                        rom-port emulation is active
 $01000000 - _ramtop	TT-RAM
 
 $40000000 - $7FFFFFFF	PCI memory, overlayed with ISA memory[1]
+$40020000               Atari-compatible rom port on RoPoCop add-in card, slot A
+$40040000               Atari-compatible rom port on RoPoCop add-in card, slot B
+$40060000               Atari-compatible rom port on RoPoCop add-in card, slot C
 $400B8000               VGA video RAM (text mode)
 $400A0000               VGA video RAM (VGA graphics mode)
+
 $80000000 - $BFFFFFFF	PCI I/O, overlayed with ISA I/O[1]
 $C0000000 - $C000DFFF	the same PCI I/O, using big endian addressing
+
+$FD000000 - $FD00FFFF   VME bus interrupt acknowledge [2]
+$FE000000 - $FEFFFFFF   VME bus memory [2]
+
 $FFFF8000 - $FFFFBFFF	used by ST hardware emulation
 $FFFFC000 - $FFFFDFFF	Milan onboard I/O:
 $FFFFC000		memory controller
@@ -22,6 +33,11 @@ $FFFFE000 - $FFFFFFFF	used by ST hardware emulation
 
 [1] PCI memory and IO are subtractively decoded, ie. any access that is not
 claimed by a PCI device is forwarded to the ISA bus.
+
+[2] only used if a supported PCI->VME adapter card is found
+
+[3] ROM port area is mapped to one of the RoPoCop card slots, or to a 128K
+area of write-protected memory in case rom-port emulation mode is selected.
 
 
 ISA IO:
