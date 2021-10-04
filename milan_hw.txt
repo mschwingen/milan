@@ -9,6 +9,8 @@ $00E00000 - $00E7FFFF	TOS
 $01000000 - _ramtop	TT-RAM
 
 $40000000 - $7FFFFFFF	PCI memory, overlayed with ISA memory[1]
+$400B8000               VGA video RAM (text mode)
+$400A0000               VGA video RAM (VGA graphics mode)
 $80000000 - $BFFFFFFF	PCI I/O, overlayed with ISA I/O[1]
 $C0000000 - $C000DFFF	the same PCI I/O, using big endian addressing
 $FFFF8000 - $FFFFBFFF	used by ST hardware emulation
@@ -126,3 +128,10 @@ ISA I/O functions:
 #define outb(data, port) *(volatile UBYTE *)(0xC0000000L + (port)) = data;
 #define outw(data, port) *(volatile UWORD *)(0x80000000L + (port)^2) = data;
 
+Recommended literature:
+- Intel i82371FB PIIX PCI ISA IDE XCELERATOR Datasheet
+  (interrupt controllers, IDE interface with busmaster DMA, Timer, ISA DMA)
+- National Semiconductor PC87308 SuperI/O Datasheet
+  (keyboard, mouse, RTC, UART, floppy, parallel port)
+- S3 Trio64 Integrated Graphics Video Accellerator Datasheet
+  (standard Milan graphics card)
